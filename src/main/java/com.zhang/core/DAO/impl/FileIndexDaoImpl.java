@@ -51,22 +51,7 @@ public class FileIndexDaoImpl implements FileIndexDao {
         }catch (SQLException e){
 
         }finally {
-            //命令不等于null
-            if(statement!=null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            //连接不为空
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+            releaseResource(null,statement,connection);
         }
     }
 
@@ -91,7 +76,6 @@ public class FileIndexDaoImpl implements FileIndexDao {
             //limit:  limit offset
             //orderByAsc:  order by
             //4个问号表示参数占用
-            String sql = "select name, path, depth, file_type from file_index";
             StringBuilder sqlBuilder=new StringBuilder();
             sqlBuilder.append("select name, path, depth, file_type from file_index");
             sqlBuilder.append(" where ")
@@ -103,17 +87,20 @@ public class FileIndexDaoImpl implements FileIndexDao {
             //因为用户可能会把文件类型写成小写，所以在这里需要把文件类型转为大写
             if(condition.getFlieType()!=null){
                 sqlBuilder.append(" and file_type = '")
-                        .append(condition.getFlieType().toUpperCase())
-                .append("' ");
+                          .append(condition.getFlieType().toUpperCase())
+                          .append("' ");
             }
             //limit  ,orderBy 必选的   （先orderBy  在 limit）
             //如果orderByASC为true-->asc升序,为false-->desc降序
             sqlBuilder.append(" order by depth ")
-                    .append(condition.getOrderByAsc()?"asc":"desc");
-
-
+                      .append(condition.getOrderByAsc() ? "asc":"desc");
+            //设置偏移量从0开始
+            sqlBuilder.append(" limit ")
+                    .append(condition.getLimit())
+                    .append(" offset 0 ");
+            System.out.println(sqlBuilder.toString());
             //3.准备命令
-            statement = connection.prepareStatement(sql);
+            statement = connection.prepareStatement(sqlBuilder.toString());
             //4.设置参数 1 2 3 4
             //5.执行命令
            resultSet= statement.executeQuery();
@@ -134,46 +121,60 @@ public class FileIndexDaoImpl implements FileIndexDao {
         }catch (SQLException e){
 
         }finally {
-            //当结果集不为空时关闭结果集
-            if(resultSet!=null){
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            //命令不等于null
-            if(statement!=null){
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            //连接不为空
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+          releaseResource(resultSet,statement,connection);
         }
         //返回查询结果
         return things;
     }
-    //测试插入函数代码
-    public static void main (String[] args){
-        FileIndexDao fileIndexDao=new FileIndexDaoImpl(DataSourceFactory.dataSource());
-        Thing thing= new Thing();
-        thing.setName("课件.pdf");
-        thing.setPath("C:\\Users\\Z\\Desktop\\38班资料\\2. 数据结构-初阶课件(C实现）");
-        thing.setDepth(5);
-        thing.setFileType(FileType.DOC);
-        fileIndexDao.insert(thing);
-        List<Thing> things = fileIndexDao.search(new Condition());
-        for(Thing thing1:things){
-            System.out.println(thing1);
+    //解决代码大重复问题  ：重构
+    private void releaseResource(ResultSet resultSet,
+                                 PreparedStatement statement,Connection connection){
+        //当结果集不为空时关闭结果集
+        if(resultSet!=null){
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        //命令不等于null
+        if(statement!=null){
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        //连接不为空
+        if(connection!=null){
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
+
+
+    //测试插入函数代码
+//    public static void main (String[] args){
+//        FileIndexDao fileIndexDao=new FileIndexDaoImpl(DataSourceFactory.dataSource());
+//        Thing thing= new Thing();
+//        thing.setName("课件2.pdf");
+//        thing.setPath("C:\\Users\\Z\\Desktop\\资料\\2. 数据结构-初阶课件(C实现）");
+//        thing.setDepth(5);
+//        thing.setFileType(FileType.DOC);
+//
+//
+//        //fileIndexDao.insert(thing);
+//        Condition condition= new Condition();
+//        condition.setName("课件2");
+//        condition.setLimit(1);
+//        condition.setOrderByAsc(true);
+//        condition.setFlieType("IMG");
+//        List<Thing> things = fileIndexDao.search(condition);
+//        for(Thing thing1:things){
+//            System.out.println(thing1);
+//        }
+//    }
 }

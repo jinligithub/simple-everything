@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data   //生成对应的getter setter toString方法
 public class Condition {
+
     //文件名
     private  String name;
     //文件类型

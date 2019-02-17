@@ -6,14 +6,10 @@ import com.zhang.core.model.Thing;
 import javax.activation.DataSource;
 
 public class FileIndexImpl implements FileIndex {
-    private  final DataSource dataSource;
-
-    public FileIndexImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    //DAO
 
     @Override
-    public void insert(Thing thing) {
+    public void index(Thing thing) {
 
     }
 }
