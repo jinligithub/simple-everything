@@ -39,6 +39,23 @@ public enum FileType {
        return FileType.OTHER;
    }
 
+    /**
+     * 根据文件类型名（String）获取文件类型对象
+     * @param name
+     * @return
+     * 存在返回文件类型，
+     * 不存在返回FileType.OTHER,因为里面只有五个类型，不属于其中四个类型的都属于OTHER，所以不能返回null
+     */
+    public static FileType lookupByName(String name) {
+        for(FileType fileType:FileType.values()){
+            //判断文件类型里是否包含传入的文件类型
+            if(fileType.name().equals(name)){
+                return fileType;
+            }
+        }
+        return FileType.OTHER;
+    }
+
    public static void main(String[] args){
        System.out.println(FileType.lookup("png"));
        System.out.println(FileType.lookup("java"));

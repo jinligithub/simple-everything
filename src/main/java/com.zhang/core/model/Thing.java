@@ -20,7 +20,7 @@ public class Thing {
     /**
      * 文件路径深度
      */
-    private String depth;
+    private Integer depth;
     /**
      * 文件类型
      */
