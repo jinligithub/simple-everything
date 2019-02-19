@@ -2,7 +2,6 @@ package com.zhang.core.search;
 
 import com.zhang.core.DAO.DataSourceFactory;
 import com.zhang.core.DAO.impl.FileIndexDaoImpl;
-import com.zhang.core.index.FileIndex;
 import com.zhang.core.model.Condition;
 import com.zhang.core.model.Thing;
 import com.zhang.core.search.impl.FileSearchImpl;

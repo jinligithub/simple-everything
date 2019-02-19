@@ -41,7 +41,7 @@ public  class simpleEverythingConfig {
                     //获取根目录，磁盘   （可迭代说明他为一个集合，因为集合可以迭代）
                     //2.遍历的目录
                     Iterable<Path> iterable = fileSystem.getRootDirectories();
-                    iterable.forEach(path -> config.getExcludePath().add(path.toString()));
+                    iterable.forEach(path -> config.includePath.add(path.toString()));
 
                     //排出的目录
                     //windows:C:\Windows目录，C:\Program Files (x86),C:\Program Files ,C:\ProgramData
@@ -68,20 +68,25 @@ public  class simpleEverythingConfig {
         return config;
     }
 //测试
+    /**
     public static void main(String[] args) {
-        //测试是否遍历的磁盘
-//        FileSystem fileSystem= FileSystems.getDefault();
-//        //获取根目录，磁盘   （可迭代说明他为一个集合，因为集合可以迭代）
-//        Iterable<Path> iterable = fileSystem.getRootDirectories();
-//        iterable.forEach(new Consumer<Path>() {
-//            @Override
-//            public void accept(Path path) {
-//                System.out.println(path);
-//            }
-//        });
-        //获取操作系统的名字
+       // 测试是否遍历的磁盘
+        FileSystem fileSystem= FileSystems.getDefault();
+        //获取根目录，磁盘   （可迭代说明他为一个集合，因为集合可以迭代）
+        Iterable<Path> iterable = fileSystem.getRootDirectories();
+        iterable.forEach(new Consumer<Path>() {
+            @Override
+            public void accept(Path path) {
+                System.out.println(path);
+            }
+        });
+       // 获取操作系统的名字
         String osName= System.getProperty("os.name");
         System.out.println(osName);
+        //测试排除的路径是否正确
+        simpleEverythingConfig config= simpleEverythingConfig.getInstance();
+        System.out.println(config.getIncludePath());
+        System.out.println(config.getExcludePath());
     }
-
+*/
 }

@@ -26,7 +26,7 @@ public final class FileConvertThing {
     private static int computerFilePath(File file){
         int depth=0;
         //获取文件路径，并转化为String数组
-        String[] segments= file.getAbsolutePath().split(File.separator);
+        String[] segments= file.getAbsolutePath().split("\\\\");
         depth=segments.length;
         return depth;
     }
