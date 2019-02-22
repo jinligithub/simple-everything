@@ -57,7 +57,6 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.4</version>
-      <scope>provided</scope>
     </dependency>
 
     <!--H2数据库以及驱动（JDBC  API）-->
@@ -86,6 +85,25 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.6.1</version>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <id>copy</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>
+                ${project.build.directory}/lib
+              </outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <!--打包插件-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -95,6 +113,9 @@
           <archive>
             <manifest>
               <!--配置主类-->
+              <addClassPath>true</addClassPath>
+              <!--lib前边不加“/”，因为“/”代表绝对路径-->
+              <classpathPrefix>lib</classpathPrefix>
               <mainClass>com.bittech.everything.cmd.EverythingPlusCmdApp</mainClass>
             </manifest>
           </archive>

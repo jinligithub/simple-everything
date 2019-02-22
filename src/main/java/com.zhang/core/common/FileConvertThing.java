@@ -19,16 +19,13 @@ public final class FileConvertThing {
         thing.setDepth(computerFilePath(file));
         //在这里只能获取文件的扩展名，所以必须根据文件的扩展名获取文件类型
         thing.setFileType(computerFileType(file));
-
         return thing;
     }
     //计算文件的深度
     private static int computerFilePath(File file){
-        int depth=0;
         //获取文件路径，并转化为String数组
         String[] segments= file.getAbsolutePath().split("\\\\");
-        depth=segments.length;
-        return depth;
+        return segments.length;
     }
     //获取文件类型
     private static FileType computerFileType(File file){

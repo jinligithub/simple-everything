@@ -3,6 +3,7 @@ package com.zhang.config;
 
 import lombok.Getter;
 
+import java.io.File;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.FileSystems;
@@ -23,48 +24,61 @@ public  class simpleEverythingConfig {
     private Set<String> includePath = new HashSet<>();
     //排除索引文件路径
     private Set<String> excludePath = new HashSet<>();
+    //TODO 可配置的参数可能在这里体现
 
-
-
+    /**
+     * H2数据库文件路径
+     */
+    private String h2IndexPath= System.getProperty("user.dir")+ File.separator+"simple_everything";
 
     private  simpleEverythingConfig(){
-
     }
+    private void initDefaultPathsConfig(){
+        //1.获取文件系统，
+        FileSystem fileSystem= FileSystems.getDefault();
+        //获取根目录，磁盘   （可迭代说明他为一个集合，因为集合可以迭代）
+        //2.遍历的目录
+        Iterable<Path> iterable = fileSystem.getRootDirectories();
+        //iterable.forEach(path -> config.includePath.add(path.toString()));
+        config.getIncludePath().add("G:\\test");
+        config.getExcludePath().add("G:\\test\\abc");
+        //排出的目录
+        //windows:C:\Windows目录，C:\Program Files (x86),
+        // C:\Program Files ,C:\ProgramData
 
+        //Linux:  /tmp/etc
+
+        String osName= System.getProperty("os.name");
+//        if(osName.startsWith("Windows")){
+//            Set<String> ex = config.getExcludePath();
+//            //要排除的文件
+//            //ex.add("C:\\Windows");
+//            ex.add("G:\\test\\abc");
+//            config.getExcludePath().add("C:\\Program Files (x86)");
+//            config.getExcludePath().add("C:\\Program Files");
+//            config.getExcludePath().add("C:\\ProgramData");
+//            config.getIncludePath().add("C:\\Users");
+//            config.getExcludePath().add("D:\\");
+//            config.getExcludePath().add("E:\\");
+//            config.getExcludePath().add("F:\\");
+//            config.getExcludePath().add("G:\\");
+//        }else{
+//            //处理Linux
+//            config.getExcludePath().add("/tmp");
+//            config.getExcludePath().add("C:/etc");
+//            config.getExcludePath().add("C:/root");
+//        }
+    }
     public static simpleEverythingConfig getInstance(){
         if(config==null){
             synchronized (simpleEverythingConfig.class){
                 if(config==null){
                     config =new simpleEverythingConfig();
-                    //1.获取文件系统，
-                    FileSystem fileSystem= FileSystems.getDefault();
-                    //获取根目录，磁盘   （可迭代说明他为一个集合，因为集合可以迭代）
-                    //2.遍历的目录
-                    Iterable<Path> iterable = fileSystem.getRootDirectories();
-                    iterable.forEach(path -> config.includePath.add(path.toString()));
-
-                    //排出的目录
-                    //windows:C:\Windows目录，C:\Program Files (x86),C:\Program Files ,C:\ProgramData
-                    //Linux:  /tmp/etc
-
-                    String osName= System.getProperty("os.name");
-                    if(osName.startsWith("Windows")){
-                        //要排除的文件
-                        config.getExcludePath().add("C:\\Windows");
-                        config.getExcludePath().add("C:\\Program Files (x86)");
-                        config.getExcludePath().add("C:\\Program Files");
-                        config.getExcludePath().add("C:\\ProgramData");
-                    }else{
-                        //处理Linux
-                        config.getExcludePath().add("/tmp");
-                        config.getExcludePath().add("C:/etc");
-                        config.getExcludePath().add("C:/root");
-                    }
-
+                    //initDefaultPathsConfig();写这里防止空指针异常。也可以写成饿汉式进行双重检查
+                    config.initDefaultPathsConfig();
                 }
             }
         }
-
         return config;
     }
 //测试
@@ -88,5 +102,5 @@ public  class simpleEverythingConfig {
         System.out.println(config.getIncludePath());
         System.out.println(config.getExcludePath());
     }
-*/
+     */
 }

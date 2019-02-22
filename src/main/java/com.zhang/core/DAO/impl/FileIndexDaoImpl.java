@@ -21,35 +21,28 @@ public class FileIndexDaoImpl implements FileIndexDao {
         this.dataSource = dataSource;
     }
 
-    /**
-     *
-     * @param thing
-     */
     @Override
-    public void insert(Thing thing) {
+    public void delete(Thing thing) {
         //连接
         Connection connection=null;
         //指令
         PreparedStatement statement=null;
         try{
             //1.获取数据库连接
-           connection =dataSource.getConnection();
-           //2.准备SQL语句
-            //4个问号表示参数占用
-            String sql = "insert into file_index(name, path, depth, file_type) values(?,?,?,?)";
+            connection =dataSource.getConnection();
+            //2.准备SQL语句
+            //这里按文件的路径删除文件因为不同文件夹下可能有相同名字的文件
+            //用like 可以把相同路径下文件都删除，这样可以清理更多的文件
+            String sql = "delete from file_index where path like '"+thing.getPath()+"%'";
             //3.准备命令
             statement = connection.prepareStatement(sql);
-            //4.设置参数 1 2 3 4
-            statement.setString(1,thing.getName());
-            statement.setString(2,thing.getPath());
-            statement.setInt(3,thing.getDepth());
-            //FileType.DOC-->DOC
-            statement.setString(4,thing.getFileType().name());
+            //4.设置参数 1
             //5.执行命令
             statement.executeUpdate();
 
         }catch (SQLException e){
-
+            //打印异常
+            e.printStackTrace();
         }finally {
             releaseResource(null,statement,connection);
         }
@@ -69,7 +62,7 @@ public class FileIndexDaoImpl implements FileIndexDao {
         try{
             //1.获取数据库连接
             connection =dataSource.getConnection();
-
+            System.out.println(connection);
             //2.准备SQL语句
             //name： like
             //fileType:=
@@ -92,12 +85,16 @@ public class FileIndexDaoImpl implements FileIndexDao {
             }
             //limit  ,orderBy 必选的   （先orderBy  在 limit）
             //如果orderByASC为true-->asc升序,为false-->desc降序
-            sqlBuilder.append(" order by depth ")
-                      .append(condition.getOrderByAsc() ? "asc":"desc");
+            if(condition.getOrderByAsc() != null) {
+                sqlBuilder.append(" order by depth ")
+                        .append(condition.getOrderByAsc() ? "asc" : "desc");
+            }
             //设置偏移量从0开始
-            sqlBuilder.append(" limit ")
-                    .append(condition.getLimit())
-                    .append(" offset 0 ");
+            if(condition.getLimit() != null) {
+                sqlBuilder.append(" limit ")
+                        .append(condition.getLimit())
+                        .append(" offset 0 ");
+            }
             System.out.println(sqlBuilder.toString());
             //3.准备命令
             statement = connection.prepareStatement(sqlBuilder.toString());
@@ -115,17 +112,19 @@ public class FileIndexDaoImpl implements FileIndexDao {
                 //根据文件类型名（String）获取文件类型对象
                 thing.setFileType(FileType.lookupByName(fileType));
                 //把查询的结果thing放到things里去
+                //System.out.println(thing);
                 things.add(thing);
             }
-
         }catch (SQLException e){
-
+            e.printStackTrace();
         }finally {
           releaseResource(resultSet,statement,connection);
         }
         //返回查询结果
+
         return things;
     }
+
     //解决代码大重复问题  ：重构
     private void releaseResource(ResultSet resultSet,
                                  PreparedStatement statement,Connection connection){
@@ -177,4 +176,38 @@ public class FileIndexDaoImpl implements FileIndexDao {
 //            System.out.println(thing1);
 //        }
 //    }
+    /**
+     *
+     * @param thing
+     */
+    @Override
+    public void insert(Thing thing) {
+        //连接
+        Connection connection=null;
+        //指令
+        PreparedStatement statement=null;
+        try{
+            //1.获取数据库连接
+            connection =dataSource.getConnection();
+            //2.准备SQL语句
+            //4个问号表示参数占用
+            String sql = "insert into file_index(name, path, depth, file_type) values(?,?,?,?)";
+            //3.准备命令
+            statement = connection.prepareStatement(sql);
+            //4.设置参数 1 2 3 4
+            statement.setString(1,thing.getName());
+            statement.setString(2,thing.getPath());
+            statement.setInt(3,thing.getDepth());
+            //FileType.DOC-->DOC
+            statement.setString(4,thing.getFileType().name());
+            //5.执行命令
+            statement.executeUpdate();
+
+        }catch (SQLException e){
+            //打印异常
+            e.printStackTrace();
+        }finally {
+            releaseResource(null,statement,connection);
+        }
+    }
 }

@@ -22,11 +22,11 @@ public class FileScanImpl implements FileScan {
     //调用拦截器
     private LinkedList<FileInterceptor> interceptors=new LinkedList<>();
 
+
     @Override
     public void index(String path) {
         //给一个路径，进行递归遍历
         File file =new File(path);
-
         //判断是否为文件，不是排除目录文件添加到fileList里去，是排除目录里的文件直接返回
         //D:\a\b\c\aaa.pdf    ->  D:\a\b
         //先判断一下这个文件的父目录是否在品牌出文件里，如果不在就把他添加到fileList里去
@@ -41,7 +41,7 @@ public class FileScanImpl implements FileScan {
             }else{
                 File[] files = file.listFiles();
                 //判断路径是否为空，不为空获取绝对路径
-                if(file!=null){
+                if(files!=null){
                     for(File f:files){
                         index(f.getAbsolutePath());
                     }
@@ -53,19 +53,14 @@ public class FileScanImpl implements FileScan {
             interceptor.apply(file);
         }
     }
-    //调用拦截器
-    public void addFileInterceptor(FileInterceptor fileInterceptor){
-        this.interceptors.add(fileInterceptor);
-    }
-//测试
-    public static void main(String[] args) {
-        FileScanImpl scan= new FileScanImpl();
-        FileInterceptor interceptor=new FilePrintInterceptor();
 
-        scan.addFileInterceptor(interceptor);
-        FileInterceptor fileIndexInterceptor=new FileIndexInterceptor
-                (new FileIndexDaoImpl(DataSourceFactory.dataSource()));
-        scan.addFileInterceptor(fileIndexInterceptor);
-        scan.index("G:\\38班资料");
+    @Override
+    public void interceptor(FileInterceptor interceptor) {
+        // 添加拦截器
+        this.interceptors.add(interceptor);
     }
+
+
+
+
 }

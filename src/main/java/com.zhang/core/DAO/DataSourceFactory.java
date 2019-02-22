@@ -4,11 +4,13 @@ package com.zhang.core.DAO;
 import com.alibaba.druid.pool.DruidDataSource;
 import javax.sql.DataSource;
 import java.io.*;
+import com.zhang.config.simpleEverythingConfig;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DataSourceFactory {
+    //数据源（单例）
     private static volatile DruidDataSource dataSource;
 
     //private保证了用户无法实例化对象
@@ -27,8 +29,8 @@ public class DataSourceFactory {
                     dataSource.setDriverClassName("org.h2.Driver");//通过反射实例化了一个driver对象
                     //url,userName,password
                     //采用的是H2的嵌入式数据库，数据库以本地文件的方式存储，只需要提供url接口
-                    //获取当前工作路径
-                    String workDir= System.getProperty("user.dir");
+                    ////获取当前工作路径
+                    ////String workDir= System.getProperty("user.dir");
                     //获取当前用户目录
                     //System.getProperty("user.home");
 
@@ -37,8 +39,8 @@ public class DataSourceFactory {
                      * jdbc:h2:~/filepath-->存储到当前用户的Home目录
                      * jdbc:h2://ip:port/databaseName-->存储到服务器
                      */
-
-                    dataSource.setUrl("jdbc:h2:"+workDir+ File.separator+"simple_everything");
+                    //获取当前工作路径
+                    dataSource.setUrl("jdbc:h2:"+simpleEverythingConfig.getInstance().getH2IndexPath());
                 }
             }
         }
@@ -93,10 +95,8 @@ public class DataSourceFactory {
             //关闭连接，流
             connection.close();
             statement.close();
-
-
         }catch(IOException e){
-
+            e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
         }
