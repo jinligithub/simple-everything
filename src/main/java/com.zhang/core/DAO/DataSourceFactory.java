@@ -40,7 +40,13 @@ public class DataSourceFactory {
                      * jdbc:h2://ip:port/databaseName-->存储到服务器
                      */
                     //获取当前工作路径
-                    dataSource.setUrl("jdbc:h2:"+simpleEverythingConfig.getInstance().getH2IndexPath());
+                    dataSource.setUrl("jdbc:h2:"+simpleEverythingConfig
+                            .getInstance().getH2IndexPath());
+
+                    //第一种方法//给validationQuery设置SQL语句
+                    dataSource.setValidationQuery("select now()");
+                    //第二种方法，把testWhileldle关闭
+                    //dataSource.setTestWhileIdle(false);
                 }
             }
         }
@@ -51,7 +57,6 @@ public class DataSourceFactory {
         //1.获取数据源
         DataSource dataSource=DataSourceFactory.dataSource();
         //2.获取sql语句
-
         /**
          * 不采取绝对路径文件 ：因为当把项目发送给别人路径就发生了改变
          * E:\JAVA\simple-everything\src\main\resources\simple_everything.sql
@@ -86,7 +91,6 @@ public class DataSourceFactory {
              * 3.4关闭连接，流
              */
             //获取数据库连接
-            // Connection connection= dataSource.getConnection();
             Connection connection = dataSource.getConnection();
             //创建命令
             PreparedStatement statement=connection.prepareStatement(sql);

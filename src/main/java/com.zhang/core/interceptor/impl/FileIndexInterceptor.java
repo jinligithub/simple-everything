@@ -18,6 +18,7 @@ public class FileIndexInterceptor implements FileInterceptor {
     @Override
     public void apply(File file) {
         Thing thing = FileConvertThing.convert(file);
+        //TODO 索引的打印
         System.out.println("Thing Insert-->"+thing);
         fileIndexDao.insert(thing);
     }

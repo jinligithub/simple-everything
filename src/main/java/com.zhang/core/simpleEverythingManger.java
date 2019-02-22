@@ -47,7 +47,7 @@ public class simpleEverythingManger {
         //数据源对象
         DataSource dataSource= DataSourceFactory.dataSource();
         //检查数据库
-        checkDatabase();
+        initOrResetDatabase();
         //业务层对象
         FileIndexDao fileIndexDao=new FileIndexDaoImpl(dataSource);
         this.fileSearch=new FileSearchImpl(fileIndexDao);
@@ -66,19 +66,10 @@ public class simpleEverythingManger {
         this.backgroundClearThread.setDaemon(true);
     }
 //数据源方面的
-    private void checkDatabase() {
-        //获取当前工作目录
-        String workDir= System.getProperty("user.dir");
-        String fileName =simpleEverythingConfig.getInstance().getH2IndexPath()+".mv.db";
-        File dbFile=new File(fileName);
-        //TODO 标记数据库初始化问题
-        if(!dbFile.exists()){
-            DataSourceFactory.initDatabase();
-        }else{
-            if(dbFile.isDirectory()){
-                throw new RuntimeException("数据库以及存在");
-            }
-        }
+
+
+    public void initOrResetDatabase(){
+        DataSourceFactory.initDatabase();
     }
 //检查数据库的的业务代码
     public static simpleEverythingManger getInstance(){
@@ -119,9 +110,10 @@ public class simpleEverythingManger {
      * 构建索引
      */
     public void buildIndex(){
+        initOrResetDatabase();
         //用一个集合获取文件路径
         Set<String> directories= simpleEverythingConfig.getInstance().getIncludePath();
-
+        System.out.println(directories.size());
         if(this.executorService==null){
             //根据电脑磁盘的数目，来设置线程池里线程的数目
             this.executorService=Executors.newFixedThreadPool(directories.size(),

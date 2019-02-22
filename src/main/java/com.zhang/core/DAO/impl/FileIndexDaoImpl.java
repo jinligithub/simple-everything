@@ -112,7 +112,6 @@ public class FileIndexDaoImpl implements FileIndexDao {
                 //根据文件类型名（String）获取文件类型对象
                 thing.setFileType(FileType.lookupByName(fileType));
                 //把查询的结果thing放到things里去
-                //System.out.println(thing);
                 things.add(thing);
             }
         }catch (SQLException e){
