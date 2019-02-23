@@ -107,11 +107,29 @@ public class DataSourceFactory {
 
 
     }
-//    public static void main (String[] args){
-//        获取数据源
+    //public static void main (String[] args){
+        //获取数据源
 //        DataSurce dataSource=DataSourceFactory.dataSource();
 //        System.out.println(dataSource);
 //
 //        DataSourceFactory.initDatabase();
-//    }
+        //演示IO包读文件
+//        try(InputStream in =DataSourceFactory.class.getClassLoader().
+//                getResourceAsStream("simple_everything.sql");){
+            //利用IOUtils，返回simple_everything.sql里的内容
+//            String sql= IOUtils.toString(in);
+//            System.out.println(sql);
+            //利用IOUtils，返回SQL语句，不返回注释
+//            IOUtils.readLines(in).stream().filter(new Predicate<String>() {
+//                @Override
+//                public boolean test(String line) {
+//                    return !line.startsWith("--");
+//                }
+//            }).forEach(line-> System.out.println(line));
+//
+//        }catch (IOException e){
+//
+//        }
+  // }
+
 }

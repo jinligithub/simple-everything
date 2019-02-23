@@ -15,15 +15,17 @@ import java.util.Scanner;
 public class everythingSearchCmdApp {
     private static Scanner scanner=new Scanner(System.in);
     public static void main(String[] args){
+        //欢迎
+        welcome();
         //解析用户参数
         parseParams(args);
        // System.out.println(simpleEverythingConfig.getInstance());//检查config的实例对不对s
-        //欢迎
-        welcome();
         //统一调度器
         simpleEverythingManger manager=simpleEverythingManger.getInstance();
         //启动后台清理现场(还可以写个清理后台现场)
         manager.startBackgroundClearThread();
+		//启动监控
+        manager.startFileSystemMonitor();
         //交互式
         interactive(manager);
 

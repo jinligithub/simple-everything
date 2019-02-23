@@ -5,6 +5,9 @@ import com.zhang.config.simpleEverythingConfig;
 import com.zhang.core.DAO.DataSourceFactory;
 import com.zhang.core.DAO.FileIndexDao;
 import com.zhang.core.DAO.impl.FileIndexDaoImpl;
+import com.zhang.core.Monitor.FileWatch;
+import com.zhang.core.common.HandlePath;
+import com.zhang.core.common.impl.FileWatchImpl;
 import com.zhang.core.index.FileScan;
 import com.zhang.core.index.impl.FileScanImpl;
 import com.zhang.core.interceptor.ThingInterceptor;
@@ -38,6 +41,8 @@ public class simpleEverythingManger {
     private Thread backgroundClearThread;
     //标识变量,用于清理线程
     private AtomicBoolean backgroundClearThreadStatus = new AtomicBoolean(false);
+    //文件监控对象
+    private FileWatch fileWatch;
 
 
     private simpleEverythingManger(){
@@ -64,6 +69,8 @@ public class simpleEverythingManger {
         this.backgroundClearThread=new Thread(this.thingClearInterceptor);
         this.backgroundClearThread.setName("Thread-Thing-Clear");
         this.backgroundClearThread.setDaemon(true);
+        //文件监控对象
+        this.fileWatch=new FileWatchImpl(fileIndexDao);
     }
 //数据源方面的
 
@@ -163,6 +170,23 @@ public class simpleEverythingManger {
             System.out.println("不能重复启动线程");
         }
     }
-
+    //启动文件监听系统
+    public void startFileSystemMonitor(){
+        simpleEverythingConfig config=simpleEverythingConfig.getInstance();
+        //要处理的路径
+        HandlePath handlePath=new HandlePath();
+        handlePath.setIncludePath(config.getIncludePath());
+        handlePath.setExcludePath(config.getExcludePath());
+        this.fileWatch.monitor(handlePath);
+        //在这里启动文件监听线程
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("文件系统监控启动");
+                fileWatch.start();
+            }
+        }).start();
+        this.fileWatch.start();
+    }
 }
 
