@@ -8,6 +8,7 @@ import java.io.File;
 /**
  * 辅助工具类：把File对象转为Thing对象
  */
+
 public final class FileConvertThing {
     private FileConvertThing(){}
 

@@ -29,7 +29,7 @@ public class FileScanImpl implements FileScan {
         File file =new File(path);
         //判断是否为文件，不是排除目录文件添加到fileList里去，是排除目录里的文件直接返回
         //D:\a\b\c\aaa.pdf    ->  D:\a\b
-        //先判断一下这个文件的父目录是否在品牌出文件里，如果不在就把他添加到fileList里去
+        //先判断一下这个文件的父目录是否在排除出文件里，如果不在就把他添加到fileList里去
         if(file.isFile()){
             if(config.getExcludePath().contains(file.getParent())){
                 return ;

@@ -9,7 +9,7 @@ import com.zhang.config.simpleEverythingConfig;
 import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Scanner;
-
+import java.util.concurrent.locks.Condition;
 
 
 public class everythingSearchCmdApp {
@@ -28,7 +28,6 @@ public class everythingSearchCmdApp {
         manager.startFileSystemMonitor();
         //交互式
         interactive(manager);
-
     }
 
     private static void parseParams(String[] args) {

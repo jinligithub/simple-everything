@@ -53,6 +53,7 @@ public class DataSourceFactory {
         //返回数据源
         return dataSource;
     }
+
     public static void initDatabase(){
         //1.获取数据源
         DataSource dataSource=DataSourceFactory.dataSource();

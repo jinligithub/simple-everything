@@ -7,17 +7,15 @@ import com.zhang.core.DAO.FileIndexDao;
 import com.zhang.core.DAO.impl.FileIndexDaoImpl;
 import com.zhang.core.Monitor.FileWatch;
 import com.zhang.core.common.HandlePath;
-import com.zhang.core.common.impl.FileWatchImpl;
+import com.zhang.core.Monitor.impl.FileWatchImpl;
 import com.zhang.core.index.FileScan;
 import com.zhang.core.index.impl.FileScanImpl;
-import com.zhang.core.interceptor.ThingInterceptor;
 import com.zhang.core.interceptor.impl.FileIndexInterceptor;
 import com.zhang.core.interceptor.impl.ThingClearInterceptor;
 import com.zhang.core.model.Condition;
 import com.zhang.core.model.Thing;
 import com.zhang.core.search.FileSearch;
 import com.zhang.core.search.impl.FileSearchImpl;
-import com.zhang.core.interceptor.impl.ThingClearInterceptor;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -143,7 +141,7 @@ public class simpleEverythingManger {
         System.out.println("build index start...");
 
         //通过这种方式把文件一遍历的同时，把文件一个一个索引
-        for(String path:directories){
+        for( String path:directories){
             this.executorService.submit(()-> {
                 simpleEverythingManger.this.fileScan.index(path);
                 //当前任务完成，值减一
